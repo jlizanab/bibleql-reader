@@ -48,6 +48,11 @@
 
 .navButton {
   @include icon-button;
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
 }
 
 .scrollArea {

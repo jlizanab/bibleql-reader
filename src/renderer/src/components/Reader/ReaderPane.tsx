@@ -1,13 +1,14 @@
-import { useMemo, useRef, type JSX } from "react";
+import { useEffect, useMemo, useRef, type JSX } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAppState } from "../../state/AppStateContext";
 import { usePassage } from "../../queries/usePassage";
 import { HAS_BIBLEQL_KEY } from "../../lib/graphql";
 import { useFocusVerse } from "../../hooks/useFocusVerse";
+import { useSpeech } from "../../hooks/useSpeech";
 import { bookLabel, stepChapter } from "../../lib/refs";
 import { STR } from "../../data/strings";
 import { SAMPLE } from "../../data/sample";
-import { NextIcon, PrevIcon } from "../icons";
+import { NextIcon, PrevIcon, SpeakIcon, StopIcon } from "../icons";
 import { ReaderColumn, type ColumnView } from "./ReaderColumn";
 import styles from "./ReaderPane.module.scss";
 
@@ -80,6 +81,30 @@ export function ReaderPane({ compareEff }: ReaderPaneProps): JSX.Element {
   const scrollRef = useRef<HTMLDivElement>(null);
   useFocusVerse(scrollRef, fromVerse, passageA.dataUpdatedAt);
 
+  // Read-aloud via the OS voices (Web Speech API — no keys, works offline
+  // with the sample chapter).
+  // One utterance is queued per verse so the verse being read can be
+  // highlighted as the voice moves down the chapter.
+  const {
+    speaking,
+    activeVerse,
+    supported: speechSupported,
+    speakChapter,
+    speakVerse,
+    stop: stopSpeech
+  } = useSpeech(state.locale);
+  const canListen = speechSupported && colA.verses.length > 0;
+
+  // Don't keep reading a chapter the user already left.
+  useEffect(() => {
+    stopSpeech();
+  }, [bookId, chapter, stopSpeech]);
+
+  function toggleListen(): void {
+    if (speaking) stopSpeech();
+    else speakChapter(colA.verses);
+  }
+
   function goStep(dir: 1 | -1): void {
     const next = stepChapter(bookId, chapter, dir);
     if (!next) return;
@@ -99,6 +124,17 @@ export function ReaderPane({ compareEff }: ReaderPaneProps): JSX.Element {
           <span className={styles.headingNote}>{headingNote}</span>
         </div>
         <div className={styles.navButtons}>
+          <button
+            type="button"
+            className={styles.navButton}
+            onClick={toggleListen}
+            title={speaking ? t.stop : t.listen}
+            aria-label={speaking ? t.stop : t.listen}
+            aria-pressed={speaking}
+            disabled={!canListen && !speaking}
+          >
+            {speaking ? <StopIcon /> : <SpeakIcon />}
+          </button>
           <button type="button" className={styles.navButton} onClick={() => goStep(-1)} title={t.prev}>
             <PrevIcon />
           </button>
@@ -110,8 +146,8 @@ export function ReaderPane({ compareEff }: ReaderPaneProps): JSX.Element {
 
       <div ref={scrollRef} className={styles.scrollArea}>
         <div className={styles.columns}>
-          <ReaderColumn column={colA} />
-          {compareEff && <ReaderColumn column={colB} bordered />}
+          <ReaderColumn column={colA} onSpeakVerse={speakVerse} speakLabel={t.listenVerse} speakingVerse={activeVerse} />
+          {compareEff && <ReaderColumn column={colB} bordered onSpeakVerse={speakVerse} speakLabel={t.listenVerse} speakingVerse={activeVerse} />}
         </div>
       </div>
     </div>

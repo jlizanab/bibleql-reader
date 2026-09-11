@@ -82,3 +82,20 @@ export function NextIcon({ size = 15, ...rest }: IconProps): JSX.Element {
     </svg>
   );
 }
+
+export function SpeakIcon({ size = 15, ...rest }: IconProps): JSX.Element {
+  return (
+    <svg {...base(size, { stroke: "currentColor", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round", ...rest })}>
+      <path d="M4 9v6h4l5 4V5L8 9H4z" />
+      <path d="M16.5 8.5a5 5 0 0 1 0 7" />
+    </svg>
+  );
+}
+
+export function StopIcon({ size = 15, ...rest }: IconProps): JSX.Element {
+  return (
+    <svg {...base(size, { stroke: "currentColor", strokeWidth: 1.6, strokeLinejoin: "round", ...rest })}>
+      <rect x="6" y="6" width="12" height="12" rx="1.5" />
+    </svg>
+  );
+}

@@ -8,6 +8,23 @@
   line-height: 1.72;
   font-size: 17px;
   text-wrap: pretty;
+  border-left: 2px solid transparent;
+  margin-left: -14px;
+  padding: 2px 0 2px 12px;
+  border-radius: 0 8px 8px 0;
+  transition: background-color 0.45s ease, border-color 0.45s ease;
+}
+
+// Verse currently being read aloud: same shape as the search highlight
+// (global `p[data-hl="on"]`) but in the deeper accent so the two never
+// clash, with a soft transition as the voice moves down the chapter.
+.speaking {
+  background: var(--sel);
+  border-left-color: var(--accent-deep);
+}
+
+.speaking .verseNumber {
+  color: var(--accent-deep);
 }
 
 .verseNumber {
@@ -16,4 +33,50 @@
   font-variant-numeric: tabular-nums;
   margin-right: 5px;
   vertical-align: 0.55em;
+}
+
+// Discreet per-verse listen button (same Web Speech API as the chapter
+// button): invisible until the verse is hovered or the button focused, so it
+// doesn't disturb reading. Always faintly visible on touch screens.
+.verseSpeak {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin-left: 6px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--faint);
+  cursor: pointer;
+  opacity: 0;
+  vertical-align: baseline;
+
+  &:hover {
+    background: var(--sel);
+    color: inherit;
+    opacity: 1;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    opacity: 1;
+  }
+}
+
+.verse:hover .verseSpeak {
+  opacity: 0.55;
+}
+
+.verse:hover .verseSpeak:hover {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .verseSpeak {
+    opacity: 0.45;
+  }
 }

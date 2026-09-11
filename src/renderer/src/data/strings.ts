@@ -43,6 +43,9 @@ export interface StringsShape {
   newTestament: string;
   pickTranslation: string;
   concUnsupported: string;
+  listen: string;
+  stop: string;
+  listenVerse: string;
 }
 
 export const STR: Record<Locale, StringsShape> = {
@@ -88,7 +91,10 @@ export const STR: Record<Locale, StringsShape> = {
     oldTestament: "Old Testament",
     newTestament: "New Testament",
     pickTranslation: "Type to filter translations",
-    concUnsupported: "BibleQL has no concordance index for %s. Indexed: %l."
+    concUnsupported: "BibleQL has no concordance index for %s. Indexed: %l.",
+    listen: "Listen to chapter",
+    stop: "Stop",
+    listenVerse: "Listen to verse"
   },
   es: {
     refPlaceholder: "Ir a la referencia — Juan 3:16",
@@ -132,6 +138,9 @@ export const STR: Record<Locale, StringsShape> = {
     oldTestament: "Antiguo Testamento",
     newTestament: "Nuevo Testamento",
     pickTranslation: "Escribe para filtrar traducciones",
-    concUnsupported: "BibleQL no tiene índice de concordancia para %s. Con índice: %l."
+    concUnsupported: "BibleQL no tiene índice de concordancia para %s. Con índice: %l.",
+    listen: "Escuchar capítulo",
+    stop: "Detener",
+    listenVerse: "Escuchar versículo"
   }
 };

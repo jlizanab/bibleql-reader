@@ -20,9 +20,12 @@ export interface ColumnView {
 interface ReaderColumnProps {
   column: ColumnView;
   bordered?: boolean;
+  onSpeakVerse?: (n: number, text: string) => void;
+  speakLabel?: string;
+  speakingVerse?: number | null;
 }
 
-export function ReaderColumn({ column, bordered = false }: ReaderColumnProps): JSX.Element {
+export function ReaderColumn({ column, bordered = false, onSpeakVerse, speakLabel, speakingVerse }: ReaderColumnProps): JSX.Element {
   return (
     <div className={bordered ? `${styles.column} ${styles.bordered}` : styles.column}>
       {column.showLabel && <div className={styles.label}>{column.label}</div>}
@@ -32,7 +35,7 @@ export function ReaderColumn({ column, bordered = false }: ReaderColumnProps): J
         </div>
       )}
       {column.notice && <div className={styles.notice}>{column.notice}</div>}
-      <VerseList verses={column.verses} />
+      <VerseList verses={column.verses} onSpeakVerse={onSpeakVerse} speakLabel={speakLabel} speakingVerse={speakingVerse} />
     </div>
   );
 }
