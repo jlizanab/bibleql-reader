@@ -23,9 +23,21 @@ interface ReaderColumnProps {
   onSpeakVerse?: (n: number, text: string) => void;
   speakLabel?: string;
   speakingVerse?: number | null;
+  isSelected?: (n: number) => boolean;
+  onToggleSelect?: (n: number, extend: boolean) => void;
+  selectLabel?: string;
 }
 
-export function ReaderColumn({ column, bordered = false, onSpeakVerse, speakLabel, speakingVerse }: ReaderColumnProps): JSX.Element {
+export function ReaderColumn({
+  column,
+  bordered = false,
+  onSpeakVerse,
+  speakLabel,
+  speakingVerse,
+  isSelected,
+  onToggleSelect,
+  selectLabel
+}: ReaderColumnProps): JSX.Element {
   return (
     <div className={bordered ? `${styles.column} ${styles.bordered}` : styles.column}>
       {column.showLabel && <div className={styles.label}>{column.label}</div>}
@@ -35,7 +47,15 @@ export function ReaderColumn({ column, bordered = false, onSpeakVerse, speakLabe
         </div>
       )}
       {column.notice && <div className={styles.notice}>{column.notice}</div>}
-      <VerseList verses={column.verses} onSpeakVerse={onSpeakVerse} speakLabel={speakLabel} speakingVerse={speakingVerse} />
+      <VerseList
+        verses={column.verses}
+        onSpeakVerse={onSpeakVerse}
+        speakLabel={speakLabel}
+        speakingVerse={speakingVerse}
+        isSelected={isSelected}
+        onToggleSelect={onToggleSelect}
+        selectLabel={selectLabel}
+      />
     </div>
   );
 }

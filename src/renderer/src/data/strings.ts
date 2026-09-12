@@ -46,6 +46,43 @@ export interface StringsShape {
   listen: string;
   stop: string;
   listenVerse: string;
+  selectedCount: string;
+  createImage: string;
+  clearSelection: string;
+  addScripture: string;
+  changeSelection: string;
+  creatorBack: string;
+  creatorTitle: string;
+  background: string;
+  chooseImage: string;
+  changeImage: string;
+  noBackground: string;
+  scripture: string;
+  properties: string;
+  noElementSelected: string;
+  font: string;
+  fontSize: string;
+  color: string;
+  align: string;
+  alignLeft: string;
+  alignCenter: string;
+  alignRight: string;
+  overlay: string;
+  preset: string;
+  zoom: string;
+  positionX: string;
+  positionY: string;
+  curatedImages: string;
+  uploadFromDisk: string;
+  photoBy: string;
+  saveImage: string;
+  copyImage: string;
+  saving: string;
+  saved: string;
+  copied: string;
+  saveError: string;
+  copyError: string;
+  format: string;
 }
 
 export const STR: Record<Locale, StringsShape> = {
@@ -94,7 +131,44 @@ export const STR: Record<Locale, StringsShape> = {
     concUnsupported: "BibleQL has no concordance index for %s. Indexed: %l.",
     listen: "Listen to chapter",
     stop: "Stop",
-    listenVerse: "Listen to verse"
+    listenVerse: "Listen to verse",
+    selectedCount: "%n selected",
+    createImage: "Create Image",
+    clearSelection: "Clear",
+    addScripture: "Add Scripture",
+    changeSelection: "Change Selection",
+    creatorBack: "Back to Reader",
+    creatorTitle: "Image Creator",
+    background: "Background",
+    chooseImage: "Choose Image",
+    changeImage: "Change Image",
+    noBackground: "No background yet",
+    scripture: "Scripture",
+    properties: "Properties",
+    noElementSelected: "Select an element to edit its properties",
+    font: "Font",
+    fontSize: "Size",
+    color: "Color",
+    align: "Alignment",
+    alignLeft: "Left",
+    alignCenter: "Center",
+    alignRight: "Right",
+    overlay: "Overlay",
+    preset: "Preset",
+    zoom: "Zoom",
+    positionX: "Horizontal position",
+    positionY: "Vertical position",
+    curatedImages: "Curated Images",
+    uploadFromDisk: "Upload from Disk",
+    photoBy: "Photo by %s on %l",
+    saveImage: "Save Image",
+    copyImage: "Copy Image",
+    saving: "Saving…",
+    saved: "Saved",
+    copied: "Copied",
+    saveError: "Couldn't save the image.",
+    copyError: "Couldn't copy the image.",
+    format: "Format"
   },
   es: {
     refPlaceholder: "Ir a la referencia — Juan 3:16",
@@ -141,6 +215,43 @@ export const STR: Record<Locale, StringsShape> = {
     concUnsupported: "BibleQL no tiene índice de concordancia para %s. Con índice: %l.",
     listen: "Escuchar capítulo",
     stop: "Detener",
-    listenVerse: "Escuchar versículo"
+    listenVerse: "Escuchar versículo",
+    selectedCount: "%n seleccionado(s)",
+    createImage: "Crear imagen",
+    clearSelection: "Borrar",
+    addScripture: "Agregar Escritura",
+    changeSelection: "Cambiar selección",
+    creatorBack: "Volver al lector",
+    creatorTitle: "Creador de imágenes",
+    background: "Fondo",
+    chooseImage: "Elegir imagen",
+    changeImage: "Cambiar imagen",
+    noBackground: "Todavía no hay fondo",
+    scripture: "Escritura",
+    properties: "Propiedades",
+    noElementSelected: "Selecciona un elemento para editar sus propiedades",
+    font: "Fuente",
+    fontSize: "Tamaño",
+    color: "Color",
+    align: "Alineación",
+    alignLeft: "Izquierda",
+    alignCenter: "Centro",
+    alignRight: "Derecha",
+    overlay: "Superposición",
+    preset: "Formato",
+    zoom: "Zoom",
+    positionX: "Posición horizontal",
+    positionY: "Posición vertical",
+    curatedImages: "Imágenes sugeridas",
+    uploadFromDisk: "Subir desde el disco",
+    photoBy: "Foto de %s en %l",
+    saveImage: "Guardar imagen",
+    copyImage: "Copiar imagen",
+    saving: "Guardando…",
+    saved: "Guardado",
+    copied: "Copiado",
+    saveError: "No se pudo guardar la imagen.",
+    copyError: "No se pudo copiar la imagen.",
+    format: "Tipo de archivo"
   }
 };

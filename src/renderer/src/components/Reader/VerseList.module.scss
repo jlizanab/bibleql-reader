@@ -15,6 +15,32 @@
   transition: background-color 0.45s ease, border-color 0.45s ease;
 }
 
+// Multi-verse selection (e.g. for "Create Image"): a third, independent
+// channel from the search highlight (`data-hl`, global) and read-aloud
+// (`.speaking`) above — both of those already claim `--sel` as a
+// background fill, so selection uses an outline instead and can combine
+// with either without visually clashing.
+.verse[data-sel="on"] {
+  outline: 1px dashed var(--accent);
+  outline-offset: 3px;
+}
+
+// The verse itself is the click target (spec: no checkbox) — click
+// anywhere on it to toggle, shift-click to extend a range.
+.selectable {
+  cursor: pointer;
+
+  &:hover {
+    outline: 1px dashed var(--divider);
+    outline-offset: 3px;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+}
+
 // Verse currently being read aloud: same shape as the search highlight
 // (global `p[data-hl="on"]`) but in the deeper accent so the two never
 // clash, with a soft transition as the voice moves down the chapter.

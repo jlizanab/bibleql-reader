@@ -1,6 +1,7 @@
 import { app, BrowserWindow, nativeTheme } from "electron";
 import { join } from "node:path";
 import { registerAiHandlers } from "./ipc/ai";
+import { registerImageCreatorHandlers } from "./ipc/imageCreator";
 
 function createWindow(): void {
   const win = new BrowserWindow({
@@ -40,6 +41,7 @@ function createWindow(): void {
 
 app.whenReady().then(() => {
   registerAiHandlers();
+  registerImageCreatorHandlers();
   createWindow();
 
   app.on("activate", () => {
