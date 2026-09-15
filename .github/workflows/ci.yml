@@ -38,6 +38,18 @@ jobs:
           sudo apt-get install -y xvfb libnss3 libgbm1 libasound2t64 libgtk-3-0 \
             libxss1 libxkbcommon0 libatk-bridge2.0-0 libcups2 libdrm2
 
+      # Doesn't print the values (GitHub also auto-masks known secret
+      # values in logs regardless) — just whether each one is empty, so a
+      # missing/misnamed/wrong-scope secret shows up here instead of as a
+      # confusing downstream test timeout.
+      - name: Verify required secrets are present
+        run: |
+          [ -n "$BIBLEQL_API_KEY" ] && echo "BIBLEQL_API_KEY: set" || echo "::warning::BIBLEQL_API_KEY is empty — passage-dependent E2E tests will fail"
+          [ -n "$UNSPLASH_ACCESS_KEY" ] && echo "UNSPLASH_ACCESS_KEY: set" || echo "::warning::UNSPLASH_ACCESS_KEY is empty — the Search tab won't render, and unsplash-search.spec.ts will time out waiting for it"
+        env:
+          BIBLEQL_API_KEY: ${{ secrets.BIBLEQL_API_KEY }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+
       # Needs a real BIBLEQL_API_KEY: verse selection hands off real
       # passage data the editor re-fetches, which isn't covered by the
       # app's offline/no-key sample fallback (see e2e/image-creator.spec.ts).

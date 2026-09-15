@@ -35,6 +35,24 @@ test.describe("Unsplash search", () => {
 
     // "Curated" is the default Background tab — switch to "Search".
     await page.getByRole("tab", { name: /Search|Buscar/i }).click();
+
+    // Fail fast with a clear message here rather than a confusing 30s
+    // timeout in the first real assertion: the Search tab only renders
+    // the search box when UNSPLASH_ACCESS_KEY was non-empty at build
+    // time (see BackgroundPanel.tsx) — otherwise it shows the "offline"
+    // fallback text instead. A missing/misnamed/wrong-scope CI secret
+    // shows up here as this exact failure.
+    const hasSearchBox = await page
+      .getByRole("searchbox")
+      .waitFor({ timeout: 5000 })
+      .then(() => true)
+      .catch(() => false);
+    if (!hasSearchBox) {
+      throw new Error(
+        "The Search tab isn't showing a search box — UNSPLASH_ACCESS_KEY was probably empty at build time " +
+          "(check the 'Verify required secrets are present' CI step, or your local .env.local)."
+      );
+    }
   });
 
   test.afterEach(async () => {
