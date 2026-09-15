@@ -51,12 +51,14 @@ test.describe("Image Creator", () => {
 
   test("selecting a curated background applies it with attribution", async () => {
     const { page } = ctx;
+    // "Curated" is the default Background tab — no tab click needed.
     const thumb = page.locator("img[src*='bible-images/thumb/']").first();
     await thumb.waitFor();
     await thumb.click();
 
     await expect(page.locator("img[src*='bible-images/full/']")).toBeVisible();
-    await expect(page.getByText("Unsplash")).toBeVisible();
+    // Not getByText: the "Unsplash" background-source tab shares that text.
+    await expect(page.getByRole("link", { name: "Unsplash" })).toBeVisible();
   });
 
   test("double-clicking the scripture text enters edit mode and commits a shortened version", async () => {

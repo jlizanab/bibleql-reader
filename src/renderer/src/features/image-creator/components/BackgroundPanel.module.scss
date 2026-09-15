@@ -13,11 +13,28 @@
   color: var(--faint);
 }
 
-.curatedLabel {
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--hair);
+  padding-bottom: 8px;
+}
+
+.tab {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
   color: var(--faint);
+
+  &:hover {
+    background: var(--sel);
+  }
+
+  &[data-active="true"] {
+    color: var(--ink);
+    font-weight: 600;
+  }
 }
 
 .curatedGrid {

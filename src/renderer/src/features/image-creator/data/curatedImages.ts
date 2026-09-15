@@ -1,3 +1,4 @@
+import { buildUnsplashAttribution } from "../lib/attribution";
 import type { Attribution } from "../model/types";
 
 // A small, fixed, developer-curated background library (spec's "Flow C
@@ -29,19 +30,16 @@ export interface CuratedImage {
   attribution: Attribution;
 }
 
-function unsplashAttribution(nameSlug: string, photoId: string, nameOverride?: string): Attribution {
+function curatedAttribution(nameSlug: string, photoId: string, nameOverride?: string): Attribution {
   const photographerName =
     nameOverride ??
     nameSlug
       .split("-")
       .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
       .join(" ");
-  return {
-    photographerName,
-    photographerUrl: `https://unsplash.com/@${nameSlug}`,
-    sourceName: "Unsplash",
-    sourceUrl: `https://unsplash.com/photos/${photoId}`
-  };
+  // Same builder (and UTM parameters) live search uses — see
+  // lib/attribution.ts and UnsplashProvider.ts.
+  return buildUnsplashAttribution(photographerName, `https://unsplash.com/@${nameSlug}`, `https://unsplash.com/photos/${photoId}`);
 }
 
 function curated(
@@ -64,7 +62,7 @@ function curated(
     fullUrl: `bible-images/full/${fileName}`,
     width,
     height,
-    attribution: unsplashAttribution(nameSlug, photoId, nameOverride)
+    attribution: curatedAttribution(nameSlug, photoId, nameOverride)
   };
 }
 

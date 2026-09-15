@@ -1,9 +1,8 @@
 import type { Attribution } from "../model/types";
 
 // Provider abstraction (spec §8) so components never call an image source
-// directly. The Unsplash implementation of this interface arrives in a
-// later phase; this slice only needs the shape to exist so nothing has to
-// be refactored when it does.
+// directly — UnsplashProvider.ts is the only thing that knows about
+// Unsplash specifically.
 export interface ImageSearchResult {
   id: string;
   thumbnailUrl: string;
@@ -19,15 +18,12 @@ export interface ImageSearchPage {
   hasMore: boolean;
 }
 
-export interface ImageAsset {
-  id: string;
-  url: string;
-  width: number;
-  height: number;
-  attribution: Attribution;
-}
-
 export interface ImageProvider {
   search(query: string, page?: number): Promise<ImageSearchPage>;
-  getImage(id: string): Promise<ImageAsset>;
+  /**
+   * Fire-and-forget download-tracking ping, required whenever a photo is
+   * actually used (not merely displayed in search results) — see
+   * docs/unsplash.md.
+   */
+  triggerDownload(result: ImageSearchResult): void;
 }

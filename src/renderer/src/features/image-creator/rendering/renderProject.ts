@@ -15,6 +15,13 @@ export interface RenderOptions {
 function loadImage(url: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
+    // Required for a remote (Unsplash) background: without requesting a
+    // CORS-mode fetch, a canvas that later draws this image becomes
+    // "tainted" and export.toBlob()/getImageData() throw a
+    // SecurityError, even though Unsplash's CDN itself sends permissive
+    // Access-Control-Allow-Origin headers. Harmless no-op for local/
+    // curated (same-origin) backgrounds.
+    img.crossOrigin = "anonymous";
     img.onload = () => resolve(img);
     img.onerror = () => reject(new Error(`Failed to load image: ${url}`));
     img.src = url;

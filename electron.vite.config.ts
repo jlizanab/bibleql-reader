@@ -22,7 +22,10 @@ export default defineConfig({
       }
     },
     define: {
-      __BIBLEQL_API_KEY__: JSON.stringify(process.env.BIBLEQL_API_KEY ?? "")
+      __BIBLEQL_API_KEY__: JSON.stringify(process.env.BIBLEQL_API_KEY ?? ""),
+      // Unsplash's public Client-ID auth is designed to be embedded in
+      // client apps (no user login, no secret) — see docs/unsplash.md.
+      __UNSPLASH_ACCESS_KEY__: JSON.stringify(process.env.UNSPLASH_ACCESS_KEY ?? "")
     },
     plugins: [react()]
   }

@@ -88,11 +88,17 @@ Two layers, deliberately different in kind:
   live service from a test.**
 - **Playwright E2E** (`npm run test:e2e`, `e2e/*.spec.ts`) — launches the real packaged app
   (`_electron.launch`, see `e2e/helpers.ts`) and drives it like a user: select verses, hand off
-  to the editor, pick a background, edit text, export. This *does* hit the real BibleQL API (the
-  editor's passage re-fetch is gated on `HAS_BIBLEQL_KEY`, which the app's offline/no-key sample
-  fallback doesn't cover) — needs `BIBLEQL_API_KEY` set at build time, same as `dist:*`. Runs in
-  CI (`.github/workflows/ci.yml`) under Xvfb, since Electron always opens a real window — there's
-  no headless mode, on any platform.
+  to the editor, pick a background, edit text, export. Each test gets a fresh, isolated
+  `--user-data-dir` (`launchApp()` in `helpers.ts`) — without that, every launch on a machine
+  shares one real profile, so a test's outcome depends on whatever "Compare"/translation state
+  was last left there. This suite *does* hit the real BibleQL API (the editor's passage re-fetch
+  is gated on `HAS_BIBLEQL_KEY`, which the app's offline/no-key sample fallback doesn't cover) —
+  needs `BIBLEQL_API_KEY` set at build time, same as `dist:*`. Unsplash is the exception: even
+  here, `e2e/unsplash-search.spec.ts` intercepts `api.unsplash.com` via `page.route()` rather than
+  hitting the real (50/hour, shared) quota — `UNSPLASH_ACCESS_KEY` still needs to be *some*
+  non-empty value at build time, since the app only renders the search tab's content at all when
+  a key is configured. Runs in CI (`.github/workflows/ci.yml`) under Xvfb, since Electron always
+  opens a real window — there's no headless mode, on any platform.
 
 ## Gotchas
 
@@ -106,12 +112,13 @@ Two layers, deliberately different in kind:
   `include` array (see `types/ai.ts` and `types/imageCreator.ts` there for the pattern).
 - `sandbox: false` in `BrowserWindow.webPreferences` is required because the preload is an ESM
   `.mjs` bundle; `contextIsolation: true` and `nodeIntegration: false` are on.
-- `BIBLEQL_API_KEY` is compile-time inlined into the renderer bundle via `define:` in
-  `electron.vite.config.ts` (from `.env` / `.env.local`, dotenv, `.env.local` overrides). The
+- `BIBLEQL_API_KEY` and `UNSPLASH_ACCESS_KEY` are compile-time inlined into the renderer bundle
+  via `define:` in `electron.vite.config.ts` (from `.env` / `.env.local`, dotenv, `.env.local`
+  overrides) — see `docs/unsplash.md` for why the Unsplash key is safe to embed this way. The
   Anthropic key is deliberately **not** bundled — it's read from `localStorage` and passed
   per-call into the `ai:ask` IPC handler (`src/main/ipc/ai.ts`). Follow the un-bundled pattern
-  for any future secret; only ship a key at build time if it's meant to be public (as
-  `BIBLEQL_API_KEY` already is).
+  for any future secret; only ship a key at build time if it's meant to be public (as those two
+  already are).
 - `p[data-hl="on"]` (the verse-highlight rule) is defined **globally** in
   `styles/global.scss`, not scoped to a module — new `<p>` elements elsewhere inherit it.
 - Reader/app preferences persist via `localStorage` only (`state/persist.ts`); the Image

@@ -72,7 +72,6 @@ export interface StringsShape {
   zoom: string;
   positionX: string;
   positionY: string;
-  curatedImages: string;
   uploadFromDisk: string;
   photoBy: string;
   saveImage: string;
@@ -84,6 +83,13 @@ export interface StringsShape {
   copyError: string;
   format: string;
   editTextHint: string;
+  searchTab: string;
+  curatedTab: string;
+  diskTab: string;
+  searchUnsplash: string;
+  searchEmpty: string;
+  searchError: string;
+  unsplashOffline: string;
 }
 
 export const STR: Record<Locale, StringsShape> = {
@@ -159,7 +165,6 @@ export const STR: Record<Locale, StringsShape> = {
     zoom: "Zoom",
     positionX: "Horizontal position",
     positionY: "Vertical position",
-    curatedImages: "Curated Images",
     uploadFromDisk: "Upload from Disk",
     photoBy: "Photo by %s on %l",
     saveImage: "Save Image",
@@ -170,7 +175,14 @@ export const STR: Record<Locale, StringsShape> = {
     saveError: "Couldn't save the image.",
     copyError: "Couldn't copy the image.",
     format: "Format",
-    editTextHint: "Double-click the text on the canvas to edit or shorten it."
+    editTextHint: "Double-click the text on the canvas to edit or shorten it.",
+    searchTab: "Search",
+    curatedTab: "Curated",
+    diskTab: "Disk",
+    searchUnsplash: "Search Unsplash — mountains, sunrise, ocean…",
+    searchEmpty: "No photos found.",
+    searchError: "Unable to load images from Unsplash. Check your internet connection and try again.",
+    unsplashOffline: "Unsplash is unavailable offline. You can use a local image instead."
   },
   es: {
     refPlaceholder: "Ir a la referencia — Juan 3:16",
@@ -244,7 +256,6 @@ export const STR: Record<Locale, StringsShape> = {
     zoom: "Zoom",
     positionX: "Posición horizontal",
     positionY: "Posición vertical",
-    curatedImages: "Imágenes sugeridas",
     uploadFromDisk: "Subir desde el disco",
     photoBy: "Foto de %s en %l",
     saveImage: "Guardar imagen",
@@ -255,6 +266,13 @@ export const STR: Record<Locale, StringsShape> = {
     saveError: "No se pudo guardar la imagen.",
     copyError: "No se pudo copiar la imagen.",
     format: "Tipo de archivo",
-    editTextHint: "Haz doble clic en el texto del lienzo para editarlo o acortarlo."
+    editTextHint: "Haz doble clic en el texto del lienzo para editarlo o acortarlo.",
+    searchTab: "Buscar",
+    curatedTab: "Sugeridas",
+    diskTab: "Disco",
+    searchUnsplash: "Buscar en Unsplash — montañas, amanecer, océano…",
+    searchEmpty: "No se encontraron fotos.",
+    searchError: "No se pudieron cargar imágenes de Unsplash. Revisa tu conexión e intenta de nuevo.",
+    unsplashOffline: "Unsplash no está disponible sin conexión. Puedes usar una imagen local."
   }
 };

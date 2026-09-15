@@ -41,10 +41,15 @@ jobs:
       # Needs a real BIBLEQL_API_KEY: verse selection hands off real
       # passage data the editor re-fetches, which isn't covered by the
       # app's offline/no-key sample fallback (see e2e/image-creator.spec.ts).
+      # UNSPLASH_ACCESS_KEY just needs to be non-empty here — the
+      # Unsplash spec mocks the network entirely (see docs/unsplash.md),
+      # but the app only renders the search UI at all when a key is
+      # configured, so an empty key would skip that tab's content.
       - name: E2E tests (Playwright + Electron)
         run: xvfb-run -a npm run test:e2e
         env:
           BIBLEQL_API_KEY: ${{ secrets.BIBLEQL_API_KEY }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
 
       - name: Upload Playwright report
         if: failure()

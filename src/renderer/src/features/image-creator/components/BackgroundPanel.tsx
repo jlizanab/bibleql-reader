@@ -5,6 +5,8 @@ import { ImageIcon } from "../../../components/icons";
 import { CURATED_IMAGES } from "../data/curatedImages";
 import { pickLocalBackground } from "../providers/localImage";
 import { selectCuratedBackground } from "../providers/curatedImages";
+import { HAS_UNSPLASH_KEY } from "../providers/UnsplashProvider";
+import { UnsplashSearch } from "./UnsplashSearch";
 import type { Background } from "../model/types";
 import styles from "./BackgroundPanel.module.scss";
 
@@ -16,8 +18,11 @@ interface BackgroundPanelProps {
   onChangeOverlay(overlay: NonNullable<Background["overlay"]>): void;
 }
 
+type BackgroundTab = "unsplash" | "curated" | "disk";
+
 export function BackgroundPanel({ locale, background, onChangeBackground, onChangeCrop, onChangeOverlay }: BackgroundPanelProps): JSX.Element {
   const t = STR[locale];
+  const [tab, setTab] = useState<BackgroundTab>("curated");
   const [busy, setBusy] = useState(false);
 
   async function handleChoose(): Promise<void> {
@@ -36,28 +41,50 @@ export function BackgroundPanel({ locale, background, onChangeBackground, onChan
     <div className={styles.panel}>
       <div className={styles.sectionTitle}>{t.background}</div>
 
-      <div className={styles.curatedLabel}>{t.curatedImages}</div>
-      <div className={styles.curatedGrid}>
-        {CURATED_IMAGES.map((image) => {
-          const label = fillTemplate(t.photoBy, { s: image.attribution.photographerName, l: image.attribution.sourceName });
-          return (
-            <button
-              key={image.id}
-              type="button"
-              className={styles.curatedThumb}
-              title={label}
-              onClick={() => onChangeBackground(selectCuratedBackground(image))}
-            >
-              <img src={image.thumbUrl} alt={label} loading="lazy" />
-            </button>
-          );
-        })}
+      <div className={styles.tabs} role="tablist">
+        <button type="button" role="tab" className={styles.tab} data-active={tab === "curated"} onClick={() => setTab("curated")}>
+          {t.curatedTab}
+        </button>
+        <button type="button" role="tab" className={styles.tab} data-active={tab === "unsplash"} onClick={() => setTab("unsplash")}>
+          {t.searchTab}
+        </button>
+        <button type="button" role="tab" className={styles.tab} data-active={tab === "disk"} onClick={() => setTab("disk")}>
+          {t.diskTab}
+        </button>
       </div>
 
-      <button type="button" className={styles.chooseButton} onClick={handleChoose} disabled={busy}>
-        <ImageIcon size={14} />
-        {t.uploadFromDisk}
-      </button>
+      {tab === "unsplash" &&
+        (HAS_UNSPLASH_KEY ? (
+          <UnsplashSearch locale={locale} onChangeBackground={onChangeBackground} />
+        ) : (
+          <p className={styles.help}>{t.unsplashOffline}</p>
+        ))}
+
+      {tab === "curated" && (
+        <div className={styles.curatedGrid}>
+          {CURATED_IMAGES.map((image) => {
+            const label = fillTemplate(t.photoBy, { s: image.attribution.photographerName, l: image.attribution.sourceName });
+            return (
+              <button
+                key={image.id}
+                type="button"
+                className={styles.curatedThumb}
+                title={label}
+                onClick={() => onChangeBackground(selectCuratedBackground(image))}
+              >
+                <img src={image.thumbUrl} alt={label} loading="lazy" />
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {tab === "disk" && (
+        <button type="button" className={styles.chooseButton} onClick={handleChoose} disabled={busy}>
+          <ImageIcon size={14} />
+          {t.uploadFromDisk}
+        </button>
+      )}
 
       {!background && <p className={styles.help}>{t.noBackground}</p>}
 

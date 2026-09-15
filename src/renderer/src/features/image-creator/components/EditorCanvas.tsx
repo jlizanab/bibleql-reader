@@ -44,9 +44,15 @@ export function EditorCanvas({
       >
         {asset && rect && (
           // Decorative background, not user content — empty alt is correct here.
+          // crossOrigin matches rendering/renderProject.ts's loader for the
+          // same URL — requesting it once without and once with CORS mode
+          // can make the browser reuse a cached "opaque" response either
+          // way, which would taint the canvas at export time regardless of
+          // what this preview element asks for.
           <img
             src={asset.objectUrl}
             alt=""
+            crossOrigin="anonymous"
             className={styles.background}
             style={{ left: rect.x, top: rect.y, width: rect.width, height: rect.height }}
             draggable={false}
