@@ -22,9 +22,11 @@ test.describe("Image Creator", () => {
     await page.waitForSelector('p[data-verse="16"]');
 
     // Click verse 16, shift-click verse 17 to extend the range — no
-    // checkbox, per this app's selection UI (see VerseList.tsx).
-    await page.click('p[data-verse="16"]', { position: { x: 20, y: 10 } });
-    await page.click('p[data-verse="17"]', { modifiers: ["Shift"], position: { x: 20, y: 10 } });
+    // checkbox, per this app's selection UI (see VerseList.tsx). .first():
+    // only the primary column is ever selectable, but both would match
+    // if "Compare" happened to be on.
+    await page.locator('p[data-verse="16"]').first().click({ position: { x: 20, y: 10 } });
+    await page.locator('p[data-verse="17"]').first().click({ modifiers: ["Shift"], position: { x: 20, y: 10 } });
 
     await page.getByRole("button", { name: /Create Image|Crear imagen/i }).click();
     await page.waitForSelector('[role="textbox"]');
@@ -32,6 +34,7 @@ test.describe("Image Creator", () => {
 
   test.afterEach(async () => {
     await ctx.app.close();
+    await ctx.cleanup();
   });
 
   test("hands off the selected verses as scripture + reference elements", async () => {

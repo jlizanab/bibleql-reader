@@ -30,7 +30,12 @@
 .selectable {
   cursor: pointer;
 
-  &:hover {
+  // Excludes an already-selected verse: this is only a "you can select
+  // this" hover preview, and `outline` can't stack with the selected
+  // outline below — without the exclusion, both rules have equal
+  // specificity and this one (being later) would win while hovering,
+  // masking the selection until the mouse moved away.
+  &:hover:not([data-sel="on"]) {
     outline: 1px dashed var(--divider);
     outline-offset: 3px;
   }
