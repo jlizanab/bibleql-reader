@@ -35,6 +35,8 @@ export function PropertiesPanel({ locale, element, onUpdate }: PropertiesPanelPr
     <div className={styles.panel}>
       <div className={styles.sectionTitle}>{t.properties}</div>
 
+      <p className={styles.help}>{t.editTextHint}</p>
+
       <label className={styles.field}>
         <span>{t.font}</span>
         <FontPicker

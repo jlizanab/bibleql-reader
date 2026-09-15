@@ -12,6 +12,7 @@ interface EditorCanvasProps {
   onSelectElement(id: string | null): void;
   onMoveElement(id: string, x: number, y: number): void;
   onResizeElement(id: string, width: number): void;
+  onChangeElementText(id: string, text: string): void;
 }
 
 export function EditorCanvas({
@@ -19,7 +20,8 @@ export function EditorCanvas({
   selectedElementId,
   onSelectElement,
   onMoveElement,
-  onResizeElement
+  onResizeElement,
+  onChangeElementText
 }: EditorCanvasProps): JSX.Element {
   const containerRef = useRef<HTMLDivElement>(null);
   const { width: containerWidth, height: containerHeight } = useElementSize(containerRef);
@@ -68,6 +70,7 @@ export function EditorCanvas({
             onSelect={() => onSelectElement(element.id)}
             onMove={(x, y) => onMoveElement(element.id, x, y)}
             onResize={(width) => onResizeElement(element.id, width)}
+            onChangeText={(text) => onChangeElementText(element.id, text)}
           />
         ))}
       </div>

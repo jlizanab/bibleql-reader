@@ -83,6 +83,7 @@ export interface StringsShape {
   saveError: string;
   copyError: string;
   format: string;
+  editTextHint: string;
 }
 
 export const STR: Record<Locale, StringsShape> = {
@@ -168,7 +169,8 @@ export const STR: Record<Locale, StringsShape> = {
     copied: "Copied",
     saveError: "Couldn't save the image.",
     copyError: "Couldn't copy the image.",
-    format: "Format"
+    format: "Format",
+    editTextHint: "Double-click the text on the canvas to edit or shorten it."
   },
   es: {
     refPlaceholder: "Ir a la referencia — Juan 3:16",
@@ -252,6 +254,7 @@ export const STR: Record<Locale, StringsShape> = {
     copied: "Copiado",
     saveError: "No se pudo guardar la imagen.",
     copyError: "No se pudo copiar la imagen.",
-    format: "Tipo de archivo"
+    format: "Tipo de archivo",
+    editTextHint: "Haz doble clic en el texto del lienzo para editarlo o acortarlo."
   }
 };

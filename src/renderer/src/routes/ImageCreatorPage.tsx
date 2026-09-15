@@ -84,6 +84,7 @@ export function ImageCreatorPage(): JSX.Element {
           onSelectElement={(id) => dispatch({ type: "SELECT_ELEMENT", id })}
           onMoveElement={(id, x, y) => dispatch({ type: "MOVE_ELEMENT", id, x, y })}
           onResizeElement={(id, width) => dispatch({ type: "RESIZE_ELEMENT", id, width })}
+          onChangeElementText={(id, text) => dispatch({ type: "UPDATE_ELEMENT", id, patch: { text } })}
         />
 
         <div className={styles.rightPanel}>
