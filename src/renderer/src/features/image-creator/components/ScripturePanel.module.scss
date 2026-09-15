@@ -1,0 +1,34 @@
+@use "../../../styles/tokens" as t;
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border-bottom: 1px solid var(--hair);
+}
+
+.sectionTitle {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.reference {
+  margin: 0;
+  font-family: t.$font-heading;
+  font-size: 16px;
+}
+
+.actionButton {
+  align-self: flex-start;
+  padding: 6px 10px;
+  border: 1px solid var(--divider);
+  border-radius: 4px;
+  font-size: 12px;
+
+  &:hover {
+    background: var(--sel);
+  }
+}

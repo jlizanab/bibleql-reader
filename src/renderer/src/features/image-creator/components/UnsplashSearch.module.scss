@@ -1,0 +1,85 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input {
+  padding: 6px 8px;
+  border: 1px solid var(--divider);
+  border-radius: 4px;
+  background: var(--bg);
+  font-size: 13px;
+  outline: none;
+
+  &:focus-visible {
+    border-color: var(--accent);
+  }
+}
+
+.spinnerRow {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.notice {
+  margin: 0;
+  font-size: 11px;
+  color: var(--faint);
+}
+
+// No overflow/max-height here on purpose — this grid lives inside
+// ImageCreatorPage's .leftPanel, which already scrolls
+// (overflow-y: auto). Nesting a second independently-scrolling region
+// inside it was the likely cause of a reported rendering glitch (photos
+// rendering with blank gaps / stacked on top of each other, worse the
+// more you scrolled) — nested `overflow: auto` containers are a known
+// source of stale-paint/compositing bugs in Chromium, especially when
+// the inner content's size keeps changing (new search results, "Load
+// more"). One scrollable region for the whole panel sidesteps it.
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.thumb {
+  aspect-ratio: 3 / 4;
+  border: 1px solid var(--divider);
+  border-radius: 4px;
+  overflow: hidden;
+  padding: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  &:hover {
+    border-color: var(--accent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+}
+
+.moreButton {
+  padding: 6px 10px;
+  border: 1px solid var(--divider);
+  border-radius: 4px;
+  font-size: 12px;
+
+  &:hover {
+    background: var(--sel);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}

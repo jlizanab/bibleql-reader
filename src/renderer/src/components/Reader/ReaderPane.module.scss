@@ -46,6 +46,41 @@
   flex: 0 0 auto;
 }
 
+.selectionBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+
+.selectionCount {
+  @include uppercase-label;
+  font-variant-numeric: tabular-nums;
+}
+
+.selectionClear {
+  padding: 5px 8px;
+  border: 1px solid var(--divider);
+  border-radius: 4px;
+  font-size: 12px;
+  @include hoverable-surface;
+}
+
+.createImageButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--accent-deep);
+
+  &:hover {
+    background: var(--sel);
+  }
+}
+
 .navButton {
   @include icon-button;
 

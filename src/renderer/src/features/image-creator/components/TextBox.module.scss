@@ -1,0 +1,36 @@
+.box {
+  position: absolute;
+  padding: 6px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  cursor: grab;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  user-select: none;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.35);
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.selected {
+  border-color: var(--accent);
+  outline: 1px dashed var(--accent);
+  outline-offset: 2px;
+}
+
+.resizeHandle {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--raise);
+  cursor: ew-resize;
+}

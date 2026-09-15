@@ -99,3 +99,13 @@ export function StopIcon({ size = 15, ...rest }: IconProps): JSX.Element {
     </svg>
   );
 }
+
+export function ImageIcon({ size = 15, ...rest }: IconProps): JSX.Element {
+  return (
+    <svg {...base(size, { stroke: "currentColor", strokeWidth: 1.5, strokeLinejoin: "round", ...rest })}>
+      <rect x="3" y="4" width="18" height="16" rx="1.5" />
+      <circle cx="8.5" cy="9.5" r="1.6" />
+      <path d="m4 17 5.2-5.2a1.5 1.5 0 0 1 2.1 0L15 15.5M13.8 14.2l1.8-1.8a1.5 1.5 0 0 1 2.1 0L20 14.5" />
+    </svg>
+  );
+}

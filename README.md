@@ -52,6 +52,22 @@ icon in the title bar) and stored locally — never committed or sent anywhere e
 Get a BibleQL key at https://bibleql.org/api-keys/request/new (docs: https://docs.bibleql.org) and
 an Anthropic key at https://console.anthropic.com.
 
+## Running tests
+
+```bash
+npm test          # Vitest — pure-logic unit tests (no network, no Electron)
+npm run test:e2e  # Playwright — builds the app, then drives the real Electron window
+```
+
+`npm test` covers things like project serialization, layout math, and reference formatting —
+fast, and safe to run without any keys configured. `npm run test:e2e` (`e2e/*.spec.ts`) launches
+the actual packaged app and drives it like a user would: selecting verses, handing off to the
+Verse Image Creator, picking a background, editing text, exporting. It needs a real
+`BIBLEQL_API_KEY` set at build time (same as `npm run dev`/`dist:*` — see above), since the
+editor's passage fetch isn't covered by the no-key sample fallback. Electron always opens a real
+window — there's no headless mode — so running it in CI (see `.github/workflows/ci.yml`, which
+runs both suites on every pull request) needs a virtual display (Xvfb on Linux runners).
+
 ## macOS: "is damaged and can't be opened"
 
 Release builds aren't code-signed/notarized yet, so macOS Gatekeeper blocks them after download

@@ -5,10 +5,13 @@ import { usePassage } from "../../queries/usePassage";
 import { HAS_BIBLEQL_KEY } from "../../lib/graphql";
 import { useFocusVerse } from "../../hooks/useFocusVerse";
 import { useSpeech } from "../../hooks/useSpeech";
+import { useVerseSelection } from "../../hooks/useVerseSelection";
 import { bookLabel, stepChapter } from "../../lib/refs";
+import { encodeVerses } from "../../lib/verseRanges";
+import { fillTemplate } from "../../lib/format";
 import { STR } from "../../data/strings";
 import { SAMPLE } from "../../data/sample";
-import { NextIcon, PrevIcon, SpeakIcon, StopIcon } from "../icons";
+import { ImageIcon, NextIcon, PrevIcon, SpeakIcon, StopIcon } from "../icons";
 import { ReaderColumn, type ColumnView } from "./ReaderColumn";
 import styles from "./ReaderPane.module.scss";
 
@@ -111,6 +114,15 @@ export function ReaderPane({ compareEff }: ReaderPaneProps): JSX.Element {
     navigate(`/read/${next.bookId}/${next.chapter}/${panel}`);
   }
 
+  // Multi-verse selection for "Create Image" — scoped to column A, since a
+  // handed-off passage only ever has one translation (spec's BibleSource).
+  const verseSelection = useVerseSelection(bookId, chapter);
+
+  function createImage(): void {
+    const v = encodeVerses(verseSelection.selected);
+    navigate(`/create?t=${encodeURIComponent(state.transA)}&b=${encodeURIComponent(bookId)}&c=${chapter}&v=${encodeURIComponent(v)}`);
+  }
+
   const headingRef = `${bookLabel(bookId, state.locale)} ${chapter}`;
   const headingNote = compareEff
     ? ""
@@ -123,6 +135,18 @@ export function ReaderPane({ compareEff }: ReaderPaneProps): JSX.Element {
           <span className={styles.headingRef}>{headingRef}</span>
           <span className={styles.headingNote}>{headingNote}</span>
         </div>
+        {verseSelection.count > 0 && (
+          <div className={styles.selectionBar}>
+            <span className={styles.selectionCount}>{fillTemplate(t.selectedCount, { n: String(verseSelection.count) })}</span>
+            <button type="button" className={styles.selectionClear} onClick={verseSelection.clear}>
+              {t.clearSelection}
+            </button>
+            <button type="button" className={styles.createImageButton} onClick={createImage}>
+              <ImageIcon size={13} />
+              {t.createImage}
+            </button>
+          </div>
+        )}
         <div className={styles.navButtons}>
           <button
             type="button"
@@ -146,7 +170,15 @@ export function ReaderPane({ compareEff }: ReaderPaneProps): JSX.Element {
 
       <div ref={scrollRef} className={styles.scrollArea}>
         <div className={styles.columns}>
-          <ReaderColumn column={colA} onSpeakVerse={speakVerse} speakLabel={t.listenVerse} speakingVerse={activeVerse} />
+          <ReaderColumn
+            column={colA}
+            onSpeakVerse={speakVerse}
+            speakLabel={t.listenVerse}
+            speakingVerse={activeVerse}
+            isSelected={verseSelection.isSelected}
+            onToggleSelect={verseSelection.toggle}
+            selectLabel={t.createImage}
+          />
           {compareEff && <ReaderColumn column={colB} bordered onSpeakVerse={speakVerse} speakLabel={t.listenVerse} speakingVerse={activeVerse} />}
         </div>
       </div>

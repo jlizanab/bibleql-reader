@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    name: Typecheck, unit tests, E2E
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests (Vitest)
+        run: npm test
+
+      # Electron always opens a real native window — there's no headless
+      # mode — so E2E needs a display even in CI. Xvfb (a virtual
+      # framebuffer) provides one without a physical/GPU display.
+      - name: Install Xvfb + Electron's runtime libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb libnss3 libgbm1 libasound2t64 libgtk-3-0 \
+            libxss1 libxkbcommon0 libatk-bridge2.0-0 libcups2 libdrm2
+
+      # Doesn't print the values (GitHub also auto-masks known secret
+      # values in logs regardless) — just whether each one is empty, so a
+      # missing/misnamed/wrong-scope secret shows up here instead of as a
+      # confusing downstream test timeout.
+      - name: Verify required secrets are present
+        run: |
+          [ -n "$BIBLEQL_API_KEY" ] && echo "BIBLEQL_API_KEY: set" || echo "::warning::BIBLEQL_API_KEY is empty — passage-dependent E2E tests will fail"
+          [ -n "$UNSPLASH_ACCESS_KEY" ] && echo "UNSPLASH_ACCESS_KEY: set" || echo "::warning::UNSPLASH_ACCESS_KEY is empty — the Search tab won't render, and unsplash-search.spec.ts will time out waiting for it"
+        env:
+          BIBLEQL_API_KEY: ${{ secrets.BIBLEQL_API_KEY }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+
+      # Needs a real BIBLEQL_API_KEY: verse selection hands off real
+      # passage data the editor re-fetches, which isn't covered by the
+      # app's offline/no-key sample fallback (see e2e/image-creator.spec.ts).
+      # UNSPLASH_ACCESS_KEY just needs to be non-empty here — the
+      # Unsplash spec mocks the network entirely (see docs/unsplash.md),
+      # but the app only renders the search UI at all when a key is
+      # configured, so an empty key would skip that tab's content.
+      - name: E2E tests (Playwright + Electron)
+        run: xvfb-run -a npm run test:e2e
+        env:
+          BIBLEQL_API_KEY: ${{ secrets.BIBLEQL_API_KEY }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

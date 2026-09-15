@@ -46,6 +46,50 @@ export interface StringsShape {
   listen: string;
   stop: string;
   listenVerse: string;
+  selectedCount: string;
+  createImage: string;
+  clearSelection: string;
+  addScripture: string;
+  changeSelection: string;
+  creatorBack: string;
+  creatorTitle: string;
+  background: string;
+  chooseImage: string;
+  changeImage: string;
+  noBackground: string;
+  scripture: string;
+  properties: string;
+  noElementSelected: string;
+  font: string;
+  fontSize: string;
+  color: string;
+  align: string;
+  alignLeft: string;
+  alignCenter: string;
+  alignRight: string;
+  overlay: string;
+  preset: string;
+  zoom: string;
+  positionX: string;
+  positionY: string;
+  uploadFromDisk: string;
+  photoBy: string;
+  saveImage: string;
+  copyImage: string;
+  saving: string;
+  saved: string;
+  copied: string;
+  saveError: string;
+  copyError: string;
+  format: string;
+  editTextHint: string;
+  searchTab: string;
+  curatedTab: string;
+  diskTab: string;
+  searchUnsplash: string;
+  searchEmpty: string;
+  searchError: string;
+  unsplashOffline: string;
 }
 
 export const STR: Record<Locale, StringsShape> = {
@@ -94,7 +138,51 @@ export const STR: Record<Locale, StringsShape> = {
     concUnsupported: "BibleQL has no concordance index for %s. Indexed: %l.",
     listen: "Listen to chapter",
     stop: "Stop",
-    listenVerse: "Listen to verse"
+    listenVerse: "Listen to verse",
+    selectedCount: "%n selected",
+    createImage: "Create Image",
+    clearSelection: "Clear",
+    addScripture: "Add Scripture",
+    changeSelection: "Change Selection",
+    creatorBack: "Back to Reader",
+    creatorTitle: "Image Creator",
+    background: "Background",
+    chooseImage: "Choose Image",
+    changeImage: "Change Image",
+    noBackground: "No background yet",
+    scripture: "Scripture",
+    properties: "Properties",
+    noElementSelected: "Select an element to edit its properties",
+    font: "Font",
+    fontSize: "Size",
+    color: "Color",
+    align: "Alignment",
+    alignLeft: "Left",
+    alignCenter: "Center",
+    alignRight: "Right",
+    overlay: "Overlay",
+    preset: "Preset",
+    zoom: "Zoom",
+    positionX: "Horizontal position",
+    positionY: "Vertical position",
+    uploadFromDisk: "Upload from Disk",
+    photoBy: "Photo by %s on %l",
+    saveImage: "Save Image",
+    copyImage: "Copy Image",
+    saving: "Saving…",
+    saved: "Saved",
+    copied: "Copied",
+    saveError: "Couldn't save the image.",
+    copyError: "Couldn't copy the image.",
+    format: "Format",
+    editTextHint: "Double-click the text on the canvas to edit or shorten it.",
+    searchTab: "Search",
+    curatedTab: "Curated",
+    diskTab: "Disk",
+    searchUnsplash: "Search Unsplash — mountains, sunrise, ocean…",
+    searchEmpty: "No photos found.",
+    searchError: "Unable to load images from Unsplash. Check your internet connection and try again.",
+    unsplashOffline: "Unsplash is unavailable offline. You can use a local image instead."
   },
   es: {
     refPlaceholder: "Ir a la referencia — Juan 3:16",
@@ -141,6 +229,50 @@ export const STR: Record<Locale, StringsShape> = {
     concUnsupported: "BibleQL no tiene índice de concordancia para %s. Con índice: %l.",
     listen: "Escuchar capítulo",
     stop: "Detener",
-    listenVerse: "Escuchar versículo"
+    listenVerse: "Escuchar versículo",
+    selectedCount: "%n seleccionado(s)",
+    createImage: "Crear imagen",
+    clearSelection: "Borrar",
+    addScripture: "Agregar Escritura",
+    changeSelection: "Cambiar selección",
+    creatorBack: "Volver al lector",
+    creatorTitle: "Creador de imágenes",
+    background: "Fondo",
+    chooseImage: "Elegir imagen",
+    changeImage: "Cambiar imagen",
+    noBackground: "Todavía no hay fondo",
+    scripture: "Escritura",
+    properties: "Propiedades",
+    noElementSelected: "Selecciona un elemento para editar sus propiedades",
+    font: "Fuente",
+    fontSize: "Tamaño",
+    color: "Color",
+    align: "Alineación",
+    alignLeft: "Izquierda",
+    alignCenter: "Centro",
+    alignRight: "Derecha",
+    overlay: "Superposición",
+    preset: "Formato",
+    zoom: "Zoom",
+    positionX: "Posición horizontal",
+    positionY: "Posición vertical",
+    uploadFromDisk: "Subir desde el disco",
+    photoBy: "Foto de %s en %l",
+    saveImage: "Guardar imagen",
+    copyImage: "Copiar imagen",
+    saving: "Guardando…",
+    saved: "Guardado",
+    copied: "Copiado",
+    saveError: "No se pudo guardar la imagen.",
+    copyError: "No se pudo copiar la imagen.",
+    format: "Tipo de archivo",
+    editTextHint: "Haz doble clic en el texto del lienzo para editarlo o acortarlo.",
+    searchTab: "Buscar",
+    curatedTab: "Sugeridas",
+    diskTab: "Disco",
+    searchUnsplash: "Buscar en Unsplash — montañas, amanecer, océano…",
+    searchEmpty: "No se encontraron fotos.",
+    searchError: "No se pudieron cargar imágenes de Unsplash. Revisa tu conexión e intenta de nuevo.",
+    unsplashOffline: "Unsplash no está disponible sin conexión. Puedes usar una imagen local."
   }
 };
