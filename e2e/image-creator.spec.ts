@@ -83,14 +83,37 @@ test.describe("Image Creator", () => {
   test("attribution links open in the system browser, not an in-app window", async () => {
     // Electron's default for target="_blank" is a bare child
     // BrowserWindow; src/main/externalLinks.ts denies that and hands the
-    // URL to the OS instead. shell.openExternal can't be observed from
-    // here, so "no second window appeared" is the practical invariant.
+    // URL to the OS instead (see docs/unsplash.md).
     const { page, app } = ctx;
+
+    // Stub shell.openExternal in the main process before clicking.
+    // Letting it run for real launches an actual browser — which on a
+    // headless CI box means xdg-open hangs, blocking app.close() in
+    // afterEach until the worker times out. Stubbing also turns this
+    // into a direct assertion on the URL handed to the OS, rather than
+    // just inferring it from the absence of a window.
+    await app.evaluate(({ shell }) => {
+      const opened: string[] = [];
+      (globalThis as unknown as { __openedExternally: string[] }).__openedExternally = opened;
+      shell.openExternal = async (url: string) => {
+        opened.push(url);
+      };
+    });
+
     await page.locator("img[src*='bible-images/thumb/']").first().waitFor();
-
     await page.getByRole("link", { name: "Aaron Burden" }).first().click();
-    await page.waitForTimeout(1000);
 
+    await expect
+      .poll(() => app.evaluate(() => (globalThis as unknown as { __openedExternally: string[] }).__openedExternally))
+      .toHaveLength(1);
+
+    const [opened] = await app.evaluate(
+      () => (globalThis as unknown as { __openedExternally: string[] }).__openedExternally
+    );
+    expect(opened).toMatch(/^https:\/\/unsplash\.com\/@aaronburden\?/);
+    expect(opened).toContain("utm_source=bibleql-reader");
+
+    // The renderer must not have been given a child window either.
     expect(app.windows()).toHaveLength(1);
   });
 
