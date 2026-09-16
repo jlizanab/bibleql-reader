@@ -49,6 +49,21 @@ test.describe("Image Creator", () => {
     await expect(scripture).toContainText("God so loved the world");
   });
 
+  test("every curated thumbnail carries a working photographer link", async () => {
+    // Unsplash's guidelines require the photographer credited and linked
+    // to their *profile*. An earlier version derived the handle from the
+    // download filename slug, and all six links 404'd — this asserts the
+    // verified handle instead (see data/curatedImages.ts).
+    const { page } = ctx;
+    await page.locator("img[src*='bible-images/thumb/']").first().waitFor();
+
+    const credit = page.getByRole("link", { name: "Aaron Burden" }).first();
+    await expect(credit).toBeVisible();
+    await expect(credit).toHaveAttribute("href", /^https:\/\/unsplash\.com\/@aaronburden\?/);
+    await expect(credit).toHaveAttribute("href", /utm_source=bibleql-reader/);
+    await expect(credit).toHaveAttribute("href", /utm_medium=referral/);
+  });
+
   test("selecting a curated background applies it with attribution", async () => {
     const { page } = ctx;
     // "Curated" is the default Background tab — no tab click needed.
@@ -57,8 +72,26 @@ test.describe("Image Creator", () => {
     await thumb.click();
 
     await expect(page.locator("img[src*='bible-images/full/']")).toBeVisible();
-    // Not getByText: the "Unsplash" background-source tab shares that text.
-    await expect(page.getByRole("link", { name: "Unsplash" })).toBeVisible();
+    // Scoped: every curated thumbnail now shows its own "on Unsplash"
+    // link too, so an unscoped lookup matches many nodes and trips
+    // Playwright's strict mode.
+    const selected = page.getByTestId("selected-attribution");
+    await expect(selected.getByRole("link", { name: "Unsplash" })).toBeVisible();
+    await expect(selected).toContainText("Aaron Burden");
+  });
+
+  test("attribution links open in the system browser, not an in-app window", async () => {
+    // Electron's default for target="_blank" is a bare child
+    // BrowserWindow; src/main/externalLinks.ts denies that and hands the
+    // URL to the OS instead. shell.openExternal can't be observed from
+    // here, so "no second window appeared" is the practical invariant.
+    const { page, app } = ctx;
+    await page.locator("img[src*='bible-images/thumb/']").first().waitFor();
+
+    await page.getByRole("link", { name: "Aaron Burden" }).first().click();
+    await page.waitForTimeout(1000);
+
+    expect(app.windows()).toHaveLength(1);
   });
 
   test("double-clicking the scripture text enters edit mode and commits a shortened version", async () => {

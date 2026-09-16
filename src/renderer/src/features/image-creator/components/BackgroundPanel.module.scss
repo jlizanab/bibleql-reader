@@ -37,10 +37,20 @@
   }
 }
 
+// Two columns, not three — same reason as UnsplashSearch.module.scss's
+// .grid: each cell carries a visible photographer credit now.
 .curatedGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 0;
+  min-width: 0;
 }
 
 .curatedThumb {
@@ -67,19 +77,15 @@
   }
 }
 
+// The credit for the *applied* background. Every thumbnail in the grid
+// above now carries its own credit too, so without a separator this reads
+// as just one more caption instead of "this is the photo you're using".
+// Link styling lives in PhotoCredit.module.scss.
 .attribution {
   margin: 0;
-  font-size: 11px;
+  padding-top: 9px;
+  border-top: 1px solid var(--hair);
   color: var(--faint);
-
-  a {
-    color: var(--faint);
-    text-decoration: underline;
-
-    &:hover {
-      color: var(--accent-deep);
-    }
-  }
 }
 
 .chooseButton {

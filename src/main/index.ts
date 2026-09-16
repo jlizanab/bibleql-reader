@@ -1,5 +1,6 @@
 import { app, BrowserWindow, nativeTheme } from "electron";
 import { join } from "node:path";
+import { attachExternalLinkHandling } from "./externalLinks";
 import { registerAiHandlers } from "./ipc/ai";
 import { registerImageCreatorHandlers } from "./ipc/imageCreator";
 
@@ -23,6 +24,10 @@ function createWindow(): void {
   });
 
   win.once("ready-to-show", () => win.show());
+
+  // Attribution and other outbound links go to the user's browser, never
+  // a child window — see externalLinks.ts.
+  attachExternalLinkHandling(win);
 
   // Forward renderer console output to this process's stdout in dev, so
   // renderer-side errors are visible without opening DevTools.

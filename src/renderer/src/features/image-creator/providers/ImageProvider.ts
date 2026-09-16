@@ -10,6 +10,14 @@ export interface ImageSearchResult {
   width: number;
   height: number;
   attribution: Attribution;
+  /**
+   * The tracking URL the API itself returned for this photo
+   * (`links.download_location`) — carries a signed `ixid` that ties the
+   * download event back to the search it came from. Always pass this
+   * through verbatim; a hand-built `/photos/:id/download` path is not
+   * compliant with the guideline (see docs/unsplash.md).
+   */
+  downloadLocation: string;
 }
 
 export interface ImageSearchPage {

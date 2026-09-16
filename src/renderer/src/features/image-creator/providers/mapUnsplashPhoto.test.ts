@@ -15,6 +15,16 @@ describe("mapUnsplashPhoto", () => {
     expect(result.height).toBe(3840);
   });
 
+  it("passes through the API's own download_location, ixid and all", () => {
+    const result = mapUnsplashPhoto(MOUNTAIN_PHOTO);
+
+    // Must be the URL the API returned, not a hand-built
+    // `/photos/:id/download` — the signed ixid is what ties the download
+    // event to the search it came from (see docs/unsplash.md).
+    expect(result.downloadLocation).toBe(MOUNTAIN_PHOTO.links.download_location);
+    expect(result.downloadLocation).toContain("ixid=");
+  });
+
   it("builds UTM-tagged attribution from the photo's user", () => {
     const result = mapUnsplashPhoto(MOUNTAIN_PHOTO);
 

@@ -14,15 +14,21 @@ const FIXTURE = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, "fixtu
 test.describe("Unsplash search", () => {
   let ctx: App;
   let downloadTriggered = false;
+  let downloadUrl = "";
+  let downloadAuth: string | undefined;
 
   test.beforeEach(async () => {
     ctx = await launchApp();
     const { page } = ctx;
     downloadTriggered = false;
+    downloadUrl = "";
+    downloadAuth = undefined;
 
     await page.route("https://api.unsplash.com/search/photos**", (route) => route.fulfill({ json: FIXTURE }));
     await page.route("https://api.unsplash.com/photos/*/download**", (route) => {
       downloadTriggered = true;
+      downloadUrl = route.request().url();
+      downloadAuth = route.request().headers()["authorization"];
       return route.fulfill({ json: { url: "https://images.unsplash.com/mock-download" } });
     });
 
@@ -78,10 +84,32 @@ test.describe("Unsplash search", () => {
     await firstThumb.waitFor();
     await firstThumb.click();
 
-    await expect(page.getByText("Kalen Emsley")).toBeVisible();
-    // Not getByText: the "Unsplash" tab button shares that text.
-    await expect(page.getByRole("link", { name: "Unsplash" })).toBeVisible();
+    // Scoped: each search result now carries its own credit links, so an
+    // unscoped lookup matches several nodes and trips strict mode.
+    const selected = page.getByTestId("selected-attribution");
+    await expect(selected).toContainText("Kalen Emsley");
+    await expect(selected.getByRole("link", { name: "Unsplash" })).toBeVisible();
+
     await expect.poll(() => downloadTriggered).toBe(true);
+    // The guideline requires pinging the API's own `links.download_location`,
+    // whose signed ixid ties the event to the originating search. A
+    // hand-built `/photos/:id/download` cannot produce this.
+    expect(downloadUrl).toContain("ixid=mock-ixid-1");
+    // The ping is a plain fetch rather than an SDK call, so it has to
+    // carry auth itself.
+    expect(downloadAuth).toMatch(/^Client-ID /);
+  });
+
+  test("every search result shows a linked photographer credit", async () => {
+    const { page } = ctx;
+    await page.getByRole("searchbox").fill("mountains");
+    await page.locator("img[src*='images.unsplash.com']").first().waitFor();
+
+    const credit = page.getByRole("link", { name: "Kalen Emsley" }).first();
+    await expect(credit).toBeVisible();
+    await expect(credit).toHaveAttribute("href", /^https:\/\/unsplash\.com\/@kalenemsley\?/);
+    await expect(credit).toHaveAttribute("href", /utm_source=bibleql-reader/);
+    await expect(credit).toHaveAttribute("href", /utm_medium=referral/);
   });
 
   test("does not trigger the download ping just from displaying search results", async () => {
