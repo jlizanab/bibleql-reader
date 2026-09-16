@@ -38,10 +38,22 @@
 // source of stale-paint/compositing bugs in Chromium, especially when
 // the inner content's size keeps changing (new search results, "Load
 // more"). One scrollable region for the whole panel sidesteps it.
+// Two columns, not three: each cell now carries a visible "Photo by X on
+// Unsplash" credit under the thumbnail (required attribution — see
+// PhotoCredit.tsx), which needs the extra width to stay readable in this
+// narrow panel.
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 0;
+  min-width: 0;
 }
 
 .thumb {

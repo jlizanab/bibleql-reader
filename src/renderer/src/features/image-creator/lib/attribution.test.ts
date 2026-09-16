@@ -1,5 +1,15 @@
 import { describe, expect, it } from "vitest";
-import { buildUnsplashAttribution } from "./attribution";
+import { buildUnsplashAttribution, unsplashPhotoUrl, unsplashProfileUrl } from "./attribution";
+
+describe("unsplash URL helpers", () => {
+  it("builds a profile URL from a verified handle", () => {
+    expect(unsplashProfileUrl("aaronburden")).toBe("https://unsplash.com/@aaronburden");
+  });
+
+  it("builds a photo-page URL from a photo id", () => {
+    expect(unsplashPhotoUrl("9zsHNt5OpqE")).toBe("https://unsplash.com/photos/9zsHNt5OpqE");
+  });
+});
 
 describe("buildUnsplashAttribution", () => {
   it("carries the photographer name through unchanged", () => {

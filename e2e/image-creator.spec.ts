@@ -49,6 +49,21 @@ test.describe("Image Creator", () => {
     await expect(scripture).toContainText("God so loved the world");
   });
 
+  test("every curated thumbnail carries a working photographer link", async () => {
+    // Unsplash's guidelines require the photographer credited and linked
+    // to their *profile*. An earlier version derived the handle from the
+    // download filename slug, and all six links 404'd — this asserts the
+    // verified handle instead (see data/curatedImages.ts).
+    const { page } = ctx;
+    await page.locator("img[src*='bible-images/thumb/']").first().waitFor();
+
+    const credit = page.getByRole("link", { name: "Aaron Burden" }).first();
+    await expect(credit).toBeVisible();
+    await expect(credit).toHaveAttribute("href", /^https:\/\/unsplash\.com\/@aaronburden\?/);
+    await expect(credit).toHaveAttribute("href", /utm_source=bibleql-reader/);
+    await expect(credit).toHaveAttribute("href", /utm_medium=referral/);
+  });
+
   test("selecting a curated background applies it with attribution", async () => {
     const { page } = ctx;
     // "Curated" is the default Background tab — no tab click needed.
@@ -57,8 +72,49 @@ test.describe("Image Creator", () => {
     await thumb.click();
 
     await expect(page.locator("img[src*='bible-images/full/']")).toBeVisible();
-    // Not getByText: the "Unsplash" background-source tab shares that text.
-    await expect(page.getByRole("link", { name: "Unsplash" })).toBeVisible();
+    // Scoped: every curated thumbnail now shows its own "on Unsplash"
+    // link too, so an unscoped lookup matches many nodes and trips
+    // Playwright's strict mode.
+    const selected = page.getByTestId("selected-attribution");
+    await expect(selected.getByRole("link", { name: "Unsplash" })).toBeVisible();
+    await expect(selected).toContainText("Aaron Burden");
+  });
+
+  test("attribution links open in the system browser, not an in-app window", async () => {
+    // Electron's default for target="_blank" is a bare child
+    // BrowserWindow; src/main/externalLinks.ts denies that and hands the
+    // URL to the OS instead (see docs/unsplash.md).
+    const { page, app } = ctx;
+
+    // Stub shell.openExternal in the main process before clicking.
+    // Letting it run for real launches an actual browser — which on a
+    // headless CI box means xdg-open hangs, blocking app.close() in
+    // afterEach until the worker times out. Stubbing also turns this
+    // into a direct assertion on the URL handed to the OS, rather than
+    // just inferring it from the absence of a window.
+    await app.evaluate(({ shell }) => {
+      const opened: string[] = [];
+      (globalThis as unknown as { __openedExternally: string[] }).__openedExternally = opened;
+      shell.openExternal = async (url: string) => {
+        opened.push(url);
+      };
+    });
+
+    await page.locator("img[src*='bible-images/thumb/']").first().waitFor();
+    await page.getByRole("link", { name: "Aaron Burden" }).first().click();
+
+    await expect
+      .poll(() => app.evaluate(() => (globalThis as unknown as { __openedExternally: string[] }).__openedExternally))
+      .toHaveLength(1);
+
+    const [opened] = await app.evaluate(
+      () => (globalThis as unknown as { __openedExternally: string[] }).__openedExternally
+    );
+    expect(opened).toMatch(/^https:\/\/unsplash\.com\/@aaronburden\?/);
+    expect(opened).toContain("utm_source=bibleql-reader");
+
+    // The renderer must not have been given a child window either.
+    expect(app.windows()).toHaveLength(1);
   });
 
   test("double-clicking the scripture text enters edit mode and commits a shortened version", async () => {

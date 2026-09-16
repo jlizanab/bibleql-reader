@@ -11,6 +11,16 @@ function withUtm(url: string): string {
   return withParams.toString();
 }
 
+/** Canonical Unsplash profile URL for a *verified* @handle. */
+export function unsplashProfileUrl(username: string): string {
+  return `https://unsplash.com/@${username}`;
+}
+
+/** Canonical Unsplash photo-page URL for a photo id. */
+export function unsplashPhotoUrl(photoId: string): string {
+  return `https://unsplash.com/photos/${photoId}`;
+}
+
 /**
  * Builds spec-compliant Unsplash attribution: "Photo by {name} on
  * Unsplash", both links carrying the required UTM parameters

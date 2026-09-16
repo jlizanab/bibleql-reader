@@ -1,12 +1,12 @@
 import { useState, type JSX } from "react";
 import { STR, type Locale } from "../../../data/strings";
-import { fillTemplate } from "../../../lib/format";
 import { ImageIcon } from "../../../components/icons";
 import { CURATED_IMAGES } from "../data/curatedImages";
 import { pickLocalBackground } from "../providers/localImage";
 import { selectCuratedBackground } from "../providers/curatedImages";
 import { HAS_UNSPLASH_KEY } from "../providers/UnsplashProvider";
 import { UnsplashSearch } from "./UnsplashSearch";
+import { PhotoCredit } from "./PhotoCredit";
 import type { Background } from "../model/types";
 import styles from "./BackgroundPanel.module.scss";
 
@@ -62,20 +62,23 @@ export function BackgroundPanel({ locale, background, onChangeBackground, onChan
 
       {tab === "curated" && (
         <div className={styles.curatedGrid}>
-          {CURATED_IMAGES.map((image) => {
-            const label = fillTemplate(t.photoBy, { s: image.attribution.photographerName, l: image.attribution.sourceName });
-            return (
+          {CURATED_IMAGES.map((image) => (
+            // See UnsplashSearch.tsx — the credit holds links, so it sits
+            // beside the button rather than inside it.
+            <figure className={styles.card} key={image.id}>
               <button
-                key={image.id}
                 type="button"
                 className={styles.curatedThumb}
-                title={label}
+                aria-label={t.useAsBackground}
                 onClick={() => onChangeBackground(selectCuratedBackground(image))}
               >
-                <img src={image.thumbUrl} alt={label} loading="lazy" />
+                <img src={image.thumbUrl} alt="" loading="lazy" />
               </button>
-            );
-          })}
+              <figcaption>
+                <PhotoCredit locale={locale} attribution={image.attribution} />
+              </figcaption>
+            </figure>
+          ))}
         </div>
       )}
 
@@ -89,22 +92,8 @@ export function BackgroundPanel({ locale, background, onChangeBackground, onChan
       {!background && <p className={styles.help}>{t.noBackground}</p>}
 
       {background?.attribution && (
-        <p className={styles.attribution}>
-          {background.attribution.photographerUrl ? (
-            <a href={background.attribution.photographerUrl} target="_blank" rel="noreferrer">
-              {background.attribution.photographerName}
-            </a>
-          ) : (
-            background.attribution.photographerName
-          )}
-          {" · "}
-          {background.attribution.sourceUrl ? (
-            <a href={background.attribution.sourceUrl} target="_blank" rel="noreferrer">
-              {background.attribution.sourceName}
-            </a>
-          ) : (
-            background.attribution.sourceName
-          )}
+        <p className={styles.attribution} data-testid="selected-attribution">
+          <PhotoCredit locale={locale} attribution={background.attribution} />
         </p>
       )}
 

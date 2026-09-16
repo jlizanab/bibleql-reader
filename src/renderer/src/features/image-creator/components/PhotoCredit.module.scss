@@ -1,0 +1,23 @@
+.credit {
+  font-size: 10px;
+  line-height: 1.3;
+  color: var(--faint);
+  // Photographer names and the panel are both narrow; let a long name
+  // break rather than push the grid wider.
+  overflow-wrap: anywhere;
+
+  a {
+    color: var(--faint);
+    text-decoration: underline;
+
+    &:hover {
+      color: var(--accent-deep);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 1px;
+      border-radius: 2px;
+    }
+  }
+}

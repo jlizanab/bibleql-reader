@@ -1,7 +1,7 @@
 import { useState, type JSX } from "react";
 import { STR, type Locale } from "../../../data/strings";
-import { fillTemplate } from "../../../lib/format";
 import { Spinner } from "../../../components/Spinner";
+import { PhotoCredit } from "./PhotoCredit";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
 import { useUnsplashSearch } from "../queries/useUnsplashSearch";
 import { selectUnsplashBackground } from "../providers/UnsplashProvider";
@@ -57,20 +57,24 @@ export function UnsplashSearch({ locale, onChangeBackground }: UnsplashSearchPro
         // term, so it isn't affected by this key and keeps existing
         // thumbnails stable.
         <div className={styles.grid} key={debouncedQuery}>
-          {results.map((result) => {
-            const label = fillTemplate(t.photoBy, { s: result.attribution.photographerName, l: result.attribution.sourceName });
-            return (
+          {results.map((result) => (
+            // figure/figcaption rather than a credit inside the button:
+            // the credit contains links, and an <a> can't be nested in a
+            // <button>. They're siblings so both stay clickable.
+            <figure className={styles.card} key={result.id}>
               <button
-                key={result.id}
                 type="button"
                 className={styles.thumb}
-                title={label}
+                aria-label={t.useAsBackground}
                 onClick={() => onChangeBackground(selectUnsplashBackground(result))}
               >
-                <img src={result.thumbnailUrl} alt={label} />
+                <img src={result.thumbnailUrl} alt="" />
               </button>
-            );
-          })}
+              <figcaption>
+                <PhotoCredit locale={locale} attribution={result.attribution} />
+              </figcaption>
+            </figure>
+          ))}
         </div>
       )}
 

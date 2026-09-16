@@ -1,6 +1,7 @@
 import { createApi } from "unsplash-js";
 import { putImageAsset } from "../assets/imageAssets";
 import { mapUnsplashPhoto } from "./mapUnsplashPhoto";
+import { isTrackableDownloadLocation } from "./unsplashDownload";
 import type { Background } from "../model/types";
 import type { ImageProvider, ImageSearchPage, ImageSearchResult } from "./ImageProvider";
 
@@ -34,10 +35,27 @@ async function search(query: string, page = 1): Promise<ImageSearchPage> {
 }
 
 function triggerDownload(imageResult: ImageSearchResult): void {
+  // The guideline is specific about *which* URL to hit: "you must send a
+  // request to the download endpoint returned under the
+  // `photo.links.download_location` property". That URL carries a signed
+  // `ixid` tying the event back to the originating search, which is the
+  // whole point — a hand-built `/photos/:id/download` registers a count
+  // but drops the correlation.
+  //
+  // Hence a plain fetch rather than the SDK: unsplash-js 8.x is an
+  // openapi-fetch client, and its generated type for that path declares
+  // `query?: never`, so the `ixid` can't be passed through a typed call
+  // at all (v7's `photos.trackDownload` helper is gone). We therefore
+  // send the absolute URL as-is, with the same headers `createApi` uses.
+  //
   // Fire-and-forget, per the guideline ("trigger a GET request... don't
   // let it block the user's action") — a failed tracking ping shouldn't
   // disrupt the editor.
-  void unsplash.GET("/photos/{id}/download", { params: { path: { id: imageResult.id } } }).catch(() => {});
+  if (!isTrackableDownloadLocation(imageResult.downloadLocation)) return;
+
+  void fetch(imageResult.downloadLocation, {
+    headers: { Authorization: `Client-ID ${__UNSPLASH_ACCESS_KEY__}`, "Accept-Version": "v1" }
+  }).catch(() => {});
 }
 
 export const unsplashProvider: ImageProvider = { search, triggerDownload };

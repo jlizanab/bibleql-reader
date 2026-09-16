@@ -11,7 +11,7 @@ export interface UnsplashPhotoLike {
   width: number;
   height: number;
   urls: { thumb: string; regular: string };
-  links: { html: string };
+  links: { html: string; download_location: string };
   user: { name: string; links: { html: string } };
 }
 
@@ -26,6 +26,7 @@ export function mapUnsplashPhoto(photo: UnsplashPhotoLike): ImageSearchResult {
     previewUrl: photo.urls.regular,
     width: photo.width,
     height: photo.height,
-    attribution: buildUnsplashAttribution(photo.user.name, photo.user.links.html, photo.links.html)
+    attribution: buildUnsplashAttribution(photo.user.name, photo.user.links.html, photo.links.html),
+    downloadLocation: photo.links.download_location
   };
 }

@@ -74,6 +74,7 @@ export interface StringsShape {
   positionY: string;
   uploadFromDisk: string;
   photoBy: string;
+  useAsBackground: string;
   saveImage: string;
   copyImage: string;
   saving: string;
@@ -167,6 +168,7 @@ export const STR: Record<Locale, StringsShape> = {
     positionY: "Vertical position",
     uploadFromDisk: "Upload from Disk",
     photoBy: "Photo by %s on %l",
+    useAsBackground: "Use as background",
     saveImage: "Save Image",
     copyImage: "Copy Image",
     saving: "Saving…",
@@ -258,6 +260,7 @@ export const STR: Record<Locale, StringsShape> = {
     positionY: "Posición vertical",
     uploadFromDisk: "Subir desde el disco",
     photoBy: "Foto de %s en %l",
+    useAsBackground: "Usar como fondo",
     saveImage: "Guardar imagen",
     copyImage: "Copiar imagen",
     saving: "Guardando…",

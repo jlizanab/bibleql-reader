@@ -19,7 +19,7 @@ export const MOUNTAIN_PHOTO = {
   },
   links: {
     html: "https://unsplash.com/photos/Bkci_8qcdvQ",
-    download_location: "https://api.unsplash.com/photos/Bkci_8qcdvQ/download"
+    download_location: "https://api.unsplash.com/photos/Bkci_8qcdvQ/download?ixid=mock-ixid-1"
   },
   user: {
     name: "Kalen Emsley",
@@ -41,7 +41,7 @@ export const DESERT_PHOTO = {
   },
   links: {
     html: "https://unsplash.com/photos/8mikJ83LmSQ",
-    download_location: "https://api.unsplash.com/photos/8mikJ83LmSQ/download"
+    download_location: "https://api.unsplash.com/photos/8mikJ83LmSQ/download?ixid=mock-ixid-2"
   },
   user: {
     name: "Jane Doe",
